@@ -2,41 +2,33 @@
 
 > **AI-Powered Idea Studio** - Multi-agent visual workspace for entrepreneurs, students, and hackathon teams
 
-## ⚠️ **IMPORTANT FOR JUDGES: This app uses RIGHT-CLICK interactions!**
+## ✨ **How to Use: Simply click on any node to access actions!**
 > **Quick Guide:**  
-> 1. **Right-click on Starting Point** → This will generate ideas 
-> 2. **Right-click on generated nodes** → Access AI agents (Criticize, Roadmap, Tasks, Pitch Deck)  
-> 3. **Don't use single-click** - you'll miss the core functionality!
+> 1. **Click on Starting Point** → Generate ideas with persona selection
+> 2. **Click on generated nodes** → Access AI agents (Criticize, Roadmap, Tasks, Pitch Deck)  
+> 3. **Click anywhere on canvas** → Close the menu
+> 4. **Enhanced scrollbars** → Wider scrollbars for easier navigation in task lists
 
-> 📅 **Documentation Note**: Usage instructions added post-submission (2025-10-06 20:30 UTC)  
-> to clarify interaction model based on user testing feedback. No code changes made.
+> 🎯 **Recent Updates**: Changed from right-click to single-click interaction for better UX.
+> Added thicker scrollbars (12px) for improved usability.
 
 ---
 
 ## 🚀 Live Demo
-- **Frontend**: https://cognitive-canvas-hackathon.vercel.app
-- **Backend API**: https://cognitive-canvas-hackathon-production.up.railway.app
-- **API Health**: https://cognitive-canvas-hackathon-production.up.railway.app/ (Returns 200 OK)
-- **GitHub**: https://github.com/somyatambi/cognitive-canvas-hackathon
+This project was deployed during the hackathon for demo purposes. For a stable, maintained deployment please check the GitHub repo or run locally (instructions below).
 
 ---
 
 ## 📖 **Quick Start Guide**
 
-### **Steps: Generate & Navigate** (RIGHT-CLICK REQUIRED!)
-1. **Right Click on Starting point and click "Brainstorm Idea"** → Get 3 persona-specific variations
-Choose based on your situation:
-- 🎓 **Student** - Budget: $0-200, skills-focused, weekend projects
-- 💼 **Entrepreneur** - Revenue-driven, B2B scalable solutions  
-- ⚡ **Hackathon** - 48-hour timeline, team-based execution
+### **Steps: Generate & Navigate** (SINGLE-CLICK)
+1. Click the Starting Point and choose "Brainstorm Ideas" → get 3 persona-aware variations.
+2. Click a Brainstormer node → choose an action (Criticize, Expand).
+3. Click a Critic node → generate a Roadmap.
+4. Click a Roadmap node → generate Tasks.
+5. Click a Tasks node → generate a Pitch Deck.
 
- Select one of the persona and you will get brainstormer node and the critic node.
-2. **Right-click on Brainstormer node** → Select "🔍 Select and Expand Idea"
-3. **Right-click on Focused Idea node** → Select "🗺️ Generate Roadmap"
-4. **Right-click on Each Roadmap node** → Select "📋 Generate Tasks"
-5. **Right-click on Roadmap node** → Select "🎤 Generate Pitch Deck"
-
-**⏱️ Total time: ~2 minutes**
+Tip: Click anywhere on the canvas to close menus. Expect end-to-end workflows in ~2 minutes.
 
 ---
 
@@ -253,10 +245,10 @@ npm run dev
 
 5. **Open browser** → http://localhost:5173
 
-### Deployment
-- **Frontend**: Vercel (https://cognitive-canvas-hackathon.vercel.app)
-- **Backend**: Railway (https://cognitive-canvas-hackathon-production.up.railway.app)
-- **Environment Variables**: Set in Railway dashboard - `OPENROUTER_API_KEY`, `CEREBRAS_API_KEY`, `PORT=8080`
+### Deployment / Hosting
+This repository is designed for local development and optional cloud hosting. For immediate use, run locally (see Local Development below).
+
+If you want to host the backend on a platform (Railway, Render, etc.), create a single-container image and provide the API keys as environment variables at deployment time. Avoid committing secrets.
 
 ---
 

@@ -1,17 +1,15 @@
 # 🚀 Cognitive Canvas - Deployment URLs
 
 ## Live Application
-- **Frontend (Vercel)**: https://cognitive-canvas-hackathon.vercel.app
-- **Backend (Railway)**: https://cognitive-canvas-hackathon-production.up.railway.app
-- **GitHub Repository**: https://github.com/somyatambi/cognitive-canvas-hackathon
+## Deployment / Local URLs
 
-## Technology Stack
-- **Frontend**: React 19, TypeScript, Vite, ReactFlow
-- **Backend**: FastAPI (Python), Nginx
-- **AI Models**: 
-  - Meta Llama 3.3 70B (via OpenRouter) - Brainstormer, Critic, Roadmap, Pitch Deck agents
-  - Cerebras Llama 3.1 8B - Task agent (ultra-fast)
-- **Deployment**: Vercel (frontend), Railway (backend)
+This project is intended to be run locally for development and testing.
+
+- Frontend (local dev server): http://localhost:5173
+- Backend gateway (Docker Compose / nginx): http://localhost:8080
+- GitHub repository: https://github.com/somyatambi/cognitive-canvas-hackathon
+
+If you deploy the backend to a cloud provider, update `frontend/src/config.ts` or set the `VITE_API_URL` environment variable in your frontend host to point to your backend's public URL.
 - **Sponsor Technologies**: Docker MCP, Cerebras AI, Meta Llama
 
 ## Backend Endpoints (All Working ✅)

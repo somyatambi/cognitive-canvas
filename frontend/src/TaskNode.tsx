@@ -74,8 +74,13 @@ const TaskNode = ({ data, id }: NodeProps<CustomNodeData>) => {
                   type="checkbox" 
                   id={`task-${id}-${index}`}
                   className="task-checkbox"
+                  onClick={(e) => e.stopPropagation()}
                 />
-                <label htmlFor={`task-${id}-${index}`} className="task-title">
+                <label 
+                  htmlFor={`task-${id}-${index}`} 
+                  className="task-title"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   {task.title}
                 </label>
                 <span className={`task-badge badge-${task.category}`}>

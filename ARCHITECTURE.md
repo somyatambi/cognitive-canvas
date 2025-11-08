@@ -18,7 +18,7 @@ Cognitive Canvas is a **distributed multi-agent system** built on microservices 
 
 ### High-Level Flow
 ```
-User Input → Frontend → API Gateway → Specialized Agent → Stream Response → Update Canvas
+User Input → Frontend → Gateway → Specialized Agent → Stream Response → Update Canvas
 ```
 
 ### Key Design Principles
@@ -44,59 +44,38 @@ User Input → Frontend → API Gateway → Specialized Agent → Stream Respons
 ### Agent Communication Pattern
 
 ```python
-# Each agent is a FastAPI microservice with identical interface
-@app.post("/generate")
-async def generate_response(request: AgentRequest):
-  return StreamingResponse(
-    stream_generator(request.prompt, model, system_prompt),
-    media_type='text/plain'
-  )
+# Each agent is a FastAPI microservice with a clear per-agent endpoint
+# e.g. POST /brainstorm, /criticize, /roadmap, /tasks, /pitchdeck
+@app.post("/brainstorm")
+async def brainstorm(request: AgentRequest):
+    return StreamingResponse(stream_generator(request.prompt, model, system_prompt), media_type='text/plain')
+
+@app.get("/")
+async def health():
+    return {"status": "ok", "agent": "brainstormer"}
 ```
 
 ---
 
-## Docker Microservices Gateway Design
+## Docker Microservices Design
 
-### Gateway Configuration
+This project uses containerized FastAPI agents behind an Nginx gateway for local development. For simple hosting the repository includes a Dockerfile that builds all agents + Nginx into a single container (the startup script launches each agent on internal ports and runs Nginx on port 80).
+
+Example Nginx routing (conceptual):
 
 ```nginx
-# nginx.conf - Routes to specialized agents
-upstream brainstormer { server brainstormer-agent:8000; }
-upstream critic { server critic-agent:8000; }
-upstream roadmap { server roadmap-agent:8000; }
-upstream task { server task-agent:8000; }
-upstream pitchdeck { server pitchdeck-agent:8000; }
-
-location /brainstormer/generate {
-  proxy_pass http://brainstormer/generate;
-  proxy_buffering off;  # Enable streaming
+# Routes external requests to internal agent endpoints
+location = /brainstorm {
+  proxy_pass http://brainstormer-agent:8000/brainstorm;
+  proxy_buffering off;
+  proxy_cache off;
+  chunked_transfer_encoding on;
 }
 ```
 
-### Docker Compose Orchestration
-
-```yaml
-services:
-  brainstormer-agent:
-  build: ./brainstormer-agent
-  environment:
-    - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
-  
-  task-agent:
-  build: ./task-agent
-  environment:
-    - CEREBRAS_API_KEY=${CEREBRAS_API_KEY}
-  
-  pitchdeck-agent:
-  build: ./pitchdeck-agent
-  environment:
-    - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
-  
-  nginx-gateway:
-  image: nginx:latest
-  ports:
-    - "8080:80"
-```
+Notes:
+- The repository includes a `Dockerfile` for single-container deployment (convenient for platforms that accept a single image).
+- For multi-container setups you can split agents into separate services and use Docker Compose or Kubernetes; not required for local testing.
 
 ---
 
