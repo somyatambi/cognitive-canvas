@@ -59,19 +59,33 @@ async def health():
 
 ## Docker Microservices Design
 
-This project uses containerized FastAPI agents behind an Nginx gateway for local development. For simple hosting the repository includes a Dockerfile that builds all agents + Nginx into a single container (the startup script launches each agent on internal ports and runs Nginx on port 80).
+### Deployment Modes
 
-Example Nginx routing (conceptual):
+**1. Single Container (Render/Production)**
+- All 5 agents + Nginx in one container
+- Agents run on localhost:8001-8005
+- Nginx gateway on port 8080 (configurable via PORT env var)
+
+**2. Multi-Container (Local Development)**
+- Each agent in separate Docker container
+- Orchestrated via docker-compose.yml
+- Nginx uses service names (e.g., `brainstormer-agent:8000`)
+
+### Nginx Gateway Configuration
 
 ```nginx
-# Routes external requests to internal agent endpoints
+# Production (single container): uses localhost
 location = /brainstorm {
-  proxy_pass http://brainstormer-agent:8000/brainstorm;
+  proxy_pass http://localhost:8001/brainstorm;
   proxy_buffering off;
-  proxy_cache off;
   chunked_transfer_encoding on;
 }
 ```
+
+**Key Features**:
+- Streaming support: `proxy_buffering off`
+- Dynamic port binding: Reads `PORT` env var (Render compatibility)
+- CORS enabled: All agents allow cross-origin requests
 
 Notes:
 - The repository includes a `Dockerfile` for single-container deployment (convenient for platforms that accept a single image).

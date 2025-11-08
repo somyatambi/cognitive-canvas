@@ -2,33 +2,23 @@
 
 > **AI-Powered Idea Studio** - Multi-agent visual workspace for entrepreneurs, students, and hackathon teams
 
-## ✨ **How to Use: Simply click on any node to access actions!**
-> **Quick Guide:**  
-> 1. **Click on Starting Point** → Generate ideas with persona selection
-> 2. **Click on generated nodes** → Access AI agents (Criticize, Roadmap, Tasks, Pitch Deck)  
-> 3. **Click anywhere on canvas** → Close the menu
-> 4. **Enhanced scrollbars** → Wider scrollbars for easier navigation in task lists
-
-> 🎯 **Recent Updates**: Changed from right-click to single-click interaction for better UX.
-> Added thicker scrollbars (12px) for improved usability.
-
 ---
 
 ## 🚀 Live Demo
-This project was deployed during the hackathon for demo purposes. For a stable, maintained deployment please check the GitHub repo or run locally (instructions below).
+- **Frontend**: https://cognitive-canvas-hackathon.vercel.app
+- **Backend**: https://cognitive-canvas-hackathon.onrender.com
 
 ---
 
 ## 📖 **Quick Start Guide**
 
-### **Steps: Generate & Navigate** (SINGLE-CLICK)
 1. Click the Starting Point and choose "Brainstorm Ideas" → get 3 persona-aware variations.
-2. Click a Brainstormer node → choose an action (Criticize, Expand).
-3. Click a Critic node → generate a Roadmap.
-4. Click a Roadmap node → generate Tasks.
-5. Click a Tasks node → generate a Pitch Deck.
+2. Click a Brainstormer node → choose an action (Expand an idea).
+3. Click a Focused idea node → generate a Roadmap.
+4. Click a Roadmap node → break down tasks for each phase of roadmap node.
+5. Click on any roadmap node → generate a Pitch Deck.
 
-Tip: Click anywhere on the canvas to close menus. Expect end-to-end workflows in ~2 minutes.
+End-to-end workflow takes ~2 minutes.
 
 ---
 
@@ -67,7 +57,7 @@ Tip: Click anywhere on the canvas to close menus. Expect end-to-end workflows in
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    React Flow Canvas (UI)                    │
+│                    React Flow Canvas (UI)                   │
 │  • Infinite visual workspace for spatial ideation           │
 │  • Real-time streaming from AI agents                       │
 │  • Interactive node-based workflow                          │
@@ -75,7 +65,7 @@ Tip: Click anywhere on the canvas to close menus. Expect end-to-end workflows in
                   │
                   ▼
 ┌─────────────────────────────────────────────────────────────┐
-│         Nginx API Gateway (Port 8080)                        │
+│         Nginx API Gateway (Port 8080)                       │
 │  • Containerized microservices architecture                 │
 │  • Intelligent routing to specialized agents                │
 │  • Streaming response orchestration                         │
@@ -83,18 +73,18 @@ Tip: Click anywhere on the canvas to close menus. Expect end-to-end workflows in
                   │
         ┌─────────┴─────────┬─────────────┬─────────────┬─────────────┐
         ▼                   ▼             ▼             ▼             ▼
-┌──────────────┐  ┌──────────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐
-│ Brainstormer │  │   Critic     │  │ Roadmap  │  │   Task   │  │Pitch Deck│
-│    Agent     │  │    Agent     │  │  Agent   │  │  Agent   │  │  Agent   │
-├──────────────┤  ├──────────────┤  ├──────────┤  ├──────────┤  ├──────────┤
-│ Meta Llama   │  │ Meta Llama   │  │ Meta Llama│ │ Cerebras │  │Meta Llama│
-│ 3.3 70B      │  │ via          │  │ via      │  │ Llama    │  │ 3.3 70B  │
+┌──────────────┐  ┌──────────────┐  ┌──────────┐  ┌──────────┐  ┌────────────┐
+│ Brainstormer │  │   Critic     │  │ Roadmap  │  │   Task   │  │Pitch Deck  │
+│    Agent     │  │    Agent     │  │  Agent   │  │  Agent   │  │    Agent   │
+├──────────────┤  ├──────────────┤  ├──────────┤  ├──────────┤  ├────────────┤
+│ Meta Llama   │  │ Meta Llama   │  │Meta Llama│  │ Cerebras │  │Meta Llama  │
+│ 3.3 70B      │  │ via          │  │ via      │  │ Llama    │  │ 3.3 70B    │ 
 │ (OpenRouter) │  │ OpenRouter   │  │OpenRouter│  │ 3.1 8B   │  │(OpenRouter)│
-│              │  │              │  │          │  │          │  │          │
-│ Creative     │  │ Analytical   │  │ Strategic│  │ Fast     │  │ Investor │
-│ Ideation +   │  │ Feedback     │  │ Planning │  │ Execution│  │ Storytell│
-│Budget-Aware  │  │              │  │          │  │          │  │   ing    │
-└──────────────┘  └──────────────┘  └──────────┘  └──────────┘  └──────────┘
+│              │  │              │  │          │  │          │  │            │
+│ Creative     │  │ Analytical   │  │ Strategic│  │ Fast     │  │ Investor   │
+│ Ideation +   │  │ Feedback     │  │ Planning │  │ Execution│  │Storytelling│
+│Budget-Aware  │  │              │  │          │  │          │  │            │
+└──────────────┘  └──────────────┘  └──────────┘  └──────────┘  └────────────┘ 
 ```
 
 ### Technology Stack
@@ -121,50 +111,36 @@ Tip: Click anywhere on the canvas to close menus. Expect end-to-end workflows in
 
 ## 🌟 Key Features
 
-### 1. **Workspace Management** 💾
-- **Save Canvases**: Save your work with custom names
-- **Load Anytime**: Browse and load any saved canvas instantly
-- **Edit Canvas Names**: Rename your saved canvases with a click
-- **Multiple Projects**: Organize different business ideas separately
-- **Quick Switching**: Easy context switching between canvases
-- **Delete Old Work**: Clean up unwanted saves
-- **LocalStorage**: All data saved locally in your browser
+### 1. **Workspace Management**
+Save, load, rename, and delete multiple canvases. All data stored locally in your browser.
 
 ### 2. **Intelligent Multi-Agent Collaboration**
-Unlike single-model systems, our agents specialize:
-- **Brainstormer** uses Llama 3.3 70B for creative ideation with **persona-aware prompts** (Student/Entrepreneur/Hackathon)
-- **Critic** provides balanced feedback with strengths & challenges
-- **Roadmap** creates strategic phase-based plans
-- **Task** leverages Cerebras for instant actionable breakdowns with **time ranges** (2-4h) and **difficulty ratings** (Easy/Medium/Hard)
-- **Pitch Deck** generates investor-ready 8-slide presentations with PDF export
+Five specialized agents work together:
+- **Brainstormer** - Creative ideation with persona-aware prompts
+- **Critic** - Balanced feedback with strengths & challenges
+- **Roadmap** - Strategic phase-based plans
+- **Task** - Actionable breakdowns with time estimates and difficulty ratings
+- **Pitch Deck** - Investor-ready 8-slide presentations with PDF export
 
-### 3. **Persona-Based Idea Generation** 🎯
-Before brainstorming, select your profile:
-- **🎓 Student**: Ideas with $0-200 budget, 10-15hrs/week, using college skills (Notion templates, TikTok channels, tutoring)
-- **💼 Entrepreneur**: B2B SaaS, agencies, marketplaces with $100k+ revenue potential
-- **⚡ Hackathon**: 24-48hr buildable projects using existing APIs (ChatGPT, Web3, Chrome extensions)
+### 3. **Persona-Based Idea Generation**
+Choose your profile before brainstorming:
+- **🎓 Student**: Low-budget ideas, part-time workload
+- **💼 Entrepreneur**: High-growth B2B/SaaS opportunities
+- **⚡ Hackathon**: 24-48hr buildable projects
 
 ### 4. **Visual Canvas Interface**
-- Infinite workspace for non-linear thinking
-- Node-based representation of ideas, critiques, roadmaps, and tasks
+- Infinite workspace with node-based representation
 - Visual connections show idea evolution
-- Professional gradient-based design system
-- Innovative side panel for workspace management
+- Side panel for workspace management
 
 ### 5. **Smart Workflow Orchestration**
-- Context-aware menu options (different actions for different node types)
+- Context-aware menu options for different node types
 - Automatic Brainstormer → Critic conversation flow
-- Seamless "Select & Expand Idea" workflow
-- Task categorization with **detailed estimates**:
-  - 🚀 Quick Wins (0.5-2h, Easy difficulty)
-  - 🎯 Core Tasks (2-5h, Medium/Hard difficulty)
-  - 📈 Growth Goals (1-3h, Easy/Medium difficulty)
+- Task categorization with time estimates and difficulty ratings
 - PDF export for pitch decks
 
 ### 6. **Streaming Real-Time Responses**
-- Watch AI agents "think" in real-time
-- No loading spinners - immediate feedback
-- Professional loading overlays with animations
+Watch AI agents generate content in real-time with immediate feedback.
 
 ---
 
@@ -207,6 +183,14 @@ Before brainstorming, select your profile:
 ### Live Demo
 **Try it now**: https://cognitive-canvas-hackathon.vercel.app
 
+### Deployment
+
+**Frontend (Vercel)**: Deployed from GitHub, auto-deploys on push to `main`
+**Backend (Render)**: Single Docker container with 5 FastAPI agents behind Nginx gateway
+- Set environment variables: `OPENROUTER_API_KEY`, `CEREBRAS_API_KEY`, `PORT=8080`
+- Update Vercel env var `VITE_API_URL` to point to your Render backend URL
+- Redeploy frontend after updating env vars
+
 ### Local Development
 
 **Prerequisites**
@@ -245,11 +229,6 @@ npm run dev
 
 5. **Open browser** → http://localhost:5173
 
-### Deployment / Hosting
-This repository is designed for local development and optional cloud hosting. For immediate use, run locally (see Local Development below).
-
-If you want to host the backend on a platform (Railway, Render, etc.), create a single-container image and provide the API keys as environment variables at deployment time. Avoid committing secrets.
-
 ---
 
 ## 👥 Team
@@ -276,7 +255,6 @@ If you want to host the backend on a platform (Railway, Render, etc.), create a 
 ## 🔗 Links
 
 - **Live App**: https://cognitive-canvas-hackathon.vercel.app
-- **Backend API**: https://cognitive-canvas-hackathon-production.up.railway.app
 - **GitHub**: https://github.com/somyatambi/cognitive-canvas-hackathon
 
 ---
