@@ -558,21 +558,23 @@ body {
 
 /* Scrollbar styling for task node */
 .task-node-content::-webkit-scrollbar {
-  width: 6px;
+  width: 12px;
 }
 
 .task-node-content::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #f1f5f9;
   border-radius: 10px;
+  margin: 4px 0;
 }
 
 .task-node-content::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #94a3b8;
   border-radius: 10px;
+  border: 2px solid #f1f5f9;
 }
 
 .task-node-content::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #64748b;
 }
 
 /* ============================================
@@ -802,21 +804,23 @@ body {
 
 /* Scrollbar for modern node */
 .modern-node-content::-webkit-scrollbar {
-  width: 6px;
+  width: 12px;
 }
 
 .modern-node-content::-webkit-scrollbar-track {
   background: #f1f5f9;
   border-radius: 10px;
+  margin: 4px 0;
 }
 
 .modern-node-content::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #94a3b8;
   border-radius: 10px;
+  border: 2px solid #f1f5f9;
 }
 
 .modern-node-content::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #64748b;
 }
 
 /* Enhanced Loading Overlay */

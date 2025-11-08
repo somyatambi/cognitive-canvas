@@ -48,9 +48,9 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [personaModal, setPersonaModal] = useState<{ show: boolean; sourceNode: any } | null>(null);
 
-  const onNodeContextMenu = useCallback(
+  const onNodeClick = useCallback(
     (event: React.MouseEvent, node: Node) => {
-      event.preventDefault();
+      event.stopPropagation(); // Prevent triggering pane click
       const pane = (event.target as HTMLElement).closest('.react-flow');
       if (!pane) return;
       const bounds = pane.getBoundingClientRect();
@@ -351,7 +351,7 @@ const App = () => {
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
           onPaneClick={onPaneClick}
-          onNodeContextMenu={onNodeContextMenu}
+          onNodeClick={onNodeClick}
           fitView
           minZoom={0.2}
           maxZoom={4}
