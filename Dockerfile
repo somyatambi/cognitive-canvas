@@ -32,9 +32,17 @@ COPY roadmap-agent /app/roadmap-agent
 COPY task-agent /app/task-agent
 COPY pitch-deck-agent /app/pitch-deck-agent
 
-# Create startup script with proper error handling
+# Create startup script with proper error handling and PORT environment variable
 RUN echo '#!/bin/bash\n\
 set -e\n\
+\n\
+# Use PORT from environment or default to 8080\n\
+export PORT=${PORT:-8080}\n\
+echo "Using PORT: $PORT"\n\
+\n\
+# Update nginx config with the correct port\n\
+sed -i "s/listen 8080;/listen $PORT;/" /etc/nginx/nginx.conf\n\
+\n\
 echo "Starting Brainstormer Agent..."\n\
 cd /app/brainstormer-agent && uvicorn main:app --host 0.0.0.0 --port 8001 --log-level info &\n\
 sleep 2\n\
@@ -50,7 +58,7 @@ sleep 2\n\
 echo "Starting Pitch Deck Agent..."\n\
 cd /app/pitch-deck-agent && uvicorn main:app --host 0.0.0.0 --port 8005 --log-level info &\n\
 sleep 3\n\
-echo "All agents started. Starting nginx..."\n\
+echo "All agents started. Starting nginx on port $PORT..."\n\
 nginx -g "daemon off;"\n\
 ' > /app/start.sh && chmod +x /app/start.sh
 
