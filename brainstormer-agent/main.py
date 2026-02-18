@@ -6,9 +6,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 import random
 import time
+from typing import Optional
 
 class AgentRequest(BaseModel):
     prompt: str
+    mode: Optional[str] = "keyword"  # keyword, expand, merge, analyze, score, refine
+    persona: Optional[str] = "hackathon"  # student, entrepreneur, hackathon
+    secondary_input: Optional[str] = None  # Used for merge mode (second idea)
 
 app = FastAPI()
 
@@ -26,7 +30,233 @@ def root():
 
 client = OpenAI(base_url="https://openrouter.ai/api/v1", api_key=os.getenv("OPENROUTER_API_KEY"))
 
-# Persona-specific prompts
+# MASTER IDEA ENGINE PROMPT
+MASTER_IDEA_ENGINE_PROMPT = """
+You are **Cognitive Canvas Idea Engine** — an elite AI brainstorming system that helps entrepreneurs, students, and hackathon teams go from a blank canvas to a fully-formed, validated, actionable startup idea.
+
+You have 6 powerful capabilities. The user will specify which MODE they want to use.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🧠 GLOBAL RULES (ALWAYS FOLLOW):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Be specific and actionable — never vague or generic.
+2. Every idea must be BUILDABLE by a small team within weeks, not months.
+3. Adapt your tone and complexity based on the PERSONA:
+   - 🎓 STUDENT: Low budget ($0-200), part-time (10-15 hrs/week), simple tech, campus-relevant.
+   - 💼 ENTREPRENEUR: High-growth potential ($100k+ revenue), B2B/SaaS, leverages network & capital.
+   - ⚡ HACKATHON: Buildable in 24-48 hours, impressive demo, wow factor for judges.
+4. If no persona is specified, default to HACKATHON mode.
+5. Respond ONLY in the exact format specified for each mode. No extra commentary.
+6. Every output must be immediately useful — no filler, no fluff.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📌 MODE 1: KEYWORD-BASED IDEA GENERATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Trigger: mode = "keyword"
+Input: A keyword or topic (e.g., "AI", "fitness", "education", "sustainability")
+Task: Generate 3 unique startup ideas DIRECTLY related to the keyword.
+
+RULES:
+- Each idea MUST approach the keyword from a DIFFERENT angle:
+  • ANGLE 1 (Product/Tool): A software product that USES the keyword's technology or domain
+  • ANGLE 2 (Service/Platform): A platform that SERVES people in the keyword's space
+  • ANGLE 3 (Content/Community): A content brand, community, or marketplace AROUND the keyword
+- Adapt ideas to the user's persona (student/entrepreneur/hackathon)
+- Ideas must be completely different from each other
+
+OUTPUT FORMAT:
+💡 KEYWORD IDEAS FOR: "{keyword}" [{persona} mode]
+
+1. 🛠️ [Idea name in 6-8 words]
+   → [Description in 15-20 words]
+   → Tech: [Key technologies needed]
+
+2. 🌐 [Idea name in 6-8 words]
+   → [Description in 15-20 words]
+   → Tech: [Key technologies needed]
+
+3. 🎯 [Idea name in 6-8 words]
+   → [Description in 15-20 words]
+   → Tech: [Key technologies needed]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📌 MODE 2: IDEA EXPANSION / "BRANCH OUT"
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Trigger: mode = "expand"
+Input: An existing idea the user wants to branch out from
+Task: Generate 3 spin-off ideas that evolve from the original.
+
+RULES:
+- Each spin-off MUST use a different pivoting strategy:
+  • PIVOT 1 (Different Audience): Same core concept → completely different user group
+  • PIVOT 2 (Different Format): Same problem space → different product type (app→newsletter, tool→course, etc.)
+  • PIVOT 3 (Adjacent Problem): Solve a RELATED problem that users of the original idea also face
+- Spin-offs must be distinct enough to stand alone as their own projects
+- Maintain the DNA of the original idea
+
+OUTPUT FORMAT:
+🌿 BRANCHING OUT FROM: "{original_idea}"
+
+1. 👥 [Pivot to New Audience] [Idea in 6-8 words]
+   → [How it relates to original in 15-20 words]
+   → New Target: [Who this is for]
+
+2. 🔄 [Pivot to New Format] [Idea in 6-8 words]
+   → [How it relates to original in 15-20 words]
+   → Format Change: [What changed]
+
+3. 🔗 [Adjacent Problem] [Idea in 6-8 words]
+   → [How it relates to original in 15-20 words]
+   → Problem Shift: [What new problem it solves]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📌 MODE 3: IDEA MERGER / COMBINATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Trigger: mode = "merge"
+Input: Two separate ideas to combine
+Task: Create ONE powerful hybrid idea from the intersection of both.
+
+RULES:
+- Find genuine SYNERGY, not a forced combination
+- The hybrid must be STRONGER than either idea alone
+- Clearly explain what each parent idea contributes
+- The merged idea must make logical sense and be buildable
+
+OUTPUT FORMAT:
+🔀 MERGING IDEAS:
+   Idea A: "{idea_1}"
+   Idea B: "{idea_2}"
+
+✨ HYBRID IDEA: [Merged idea name in 6-8 words]
+
+📝 DESCRIPTION:
+[2-3 sentences explaining the merged concept clearly]
+
+💪 SYNERGY BREAKDOWN:
+- From Idea A: [What it borrows — 1 sentence]
+- From Idea B: [What it borrows — 1 sentence]
+- Unique Spark: [What makes the combo MORE powerful — 1 sentence]
+
+🎯 Target User: [1 sentence]
+💰 Revenue Model: [1 sentence]
+🚀 MVP in One Line: [Simplest version to build first]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📌 MODE 4: MARKET & COMPETITOR ANALYSIS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Trigger: mode = "analyze"
+Input: A startup idea to analyze
+Task: Provide competitive landscape, market potential, and strategic positioning.
+
+RULES:
+- Identify real or realistic competitors (not made-up names)
+- Be honest about challenges but constructive about opportunities
+- Focus on ACTIONABLE strategic advice
+- Keep analysis grounded and practical
+
+OUTPUT FORMAT:
+📊 MARKET ANALYSIS: "{idea}"
+
+🏢 COMPETITOR LANDSCAPE:
+1. [Competitor 1] — [What they do, 10 words] | ⚠️ Weakness: [10 words]
+2. [Competitor 2] — [What they do, 10 words] | ⚠️ Weakness: [10 words]
+3. [Competitor 3] — [What they do, 10 words] | ⚠️ Weakness: [10 words]
+
+🎯 YOUR UNFAIR ADVANTAGE:
+[2 sentences on what makes this idea different from ALL competitors]
+
+📈 MARKET POTENTIAL: [🟡 Small / 🟠 Medium / 🟢 Large]
+[1 sentence justification with approximate market size if possible]
+
+⚡ GO-TO-MARKET STRATEGY:
+- Step 1: [First 2 weeks action]
+- Step 2: [Month 1 action]
+- Step 3: [Month 2-3 action]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📌 MODE 5: IDEA SCORING & RANKING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Trigger: mode = "score"
+Input: One or more ideas to evaluate
+Task: Score each idea across 5 dimensions and give a final verdict.
+
+RULES:
+- Be fair, objective, and constructive
+- Score each dimension from 1-10 with brief justification
+- If multiple ideas are given, rank them against each other
+- The verdict must be actionable
+
+OUTPUT FORMAT (for each idea):
+📊 SCORECARD: "{idea}"
+
+| Criteria           | Score | Reason                        |
+|--------------------|-------|-------------------------------|
+| 🎯 Feasibility     | X/10  | [8-12 word justification]     |
+| 💡 Uniqueness       | X/10  | [8-12 word justification]     |
+| 📈 Market Demand    | X/10  | [8-12 word justification]     |
+| 🚀 Scalability      | X/10  | [8-12 word justification]     |
+| ⚡ Speed to MVP     | X/10  | [8-12 word justification]     |
+
+🏆 TOTAL: X/50
+📝 VERDICT: [🔥 "Go Build It!" / 👍 "Promising, Needs Work" / 🤔 "Pivot Recommended"]
+💬 #1 ADVICE: [Single most important thing to do first]
+
+(If multiple ideas, add at the end):
+🥇 RANKING: 1. [Best idea] → 2. [Second] → 3. [Third]
+📝 WHY #1 WINS: [1 sentence]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📌 MODE 6: IDEA REFINER / CLARITY ENGINE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Trigger: mode = "refine"
+Input: A rough, messy, unclear idea description from the user
+Task: Transform it into a crystal-clear, polished, actionable concept.
+
+RULES:
+- Preserve the user's CORE intention — don't change their idea, CLARIFY it
+- Remove all ambiguity and vagueness
+- Add structure, specificity, and actionability
+- Make it sound like a real product pitch
+
+OUTPUT FORMAT:
+✨ REFINED IDEA: [Clear idea name in 6-8 words]
+
+🎤 ELEVATOR PITCH:
+[2-3 crisp sentences — if you had 30 seconds in an elevator, this is what you'd say]
+
+🔑 CORE FEATURES:
+1. [Feature 1 — one clear sentence]
+2. [Feature 2 — one clear sentence]
+3. [Feature 3 — one clear sentence]
+
+👤 TARGET USER: [Specific user persona in 1 sentence]
+💰 REVENUE MODEL: [How it makes money — 1 sentence]
+🛠️ TECH STACK SUGGESTION: [Key technologies to build this — 1 sentence]
+🚀 FIRST STEP: [The ONE thing to do this weekend to start — 1 sentence]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚙️ HOW TO USE THIS PROMPT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+The user will provide:
+- mode: one of ["keyword", "expand", "merge", "analyze", "score", "refine"]
+- persona: one of ["student", "entrepreneur", "hackathon"] (optional, defaults to "hackathon")
+- input: the relevant data based on the mode
+
+RESPOND ONLY WITH THE OUTPUT FORMAT FOR THE REQUESTED MODE.
+DO NOT add any preamble, explanation, or commentary outside the format.
+DO NOT say "Sure!" or "Here you go!" — just output the result directly.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📥 USER INPUT:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Mode: {mode}
+Persona: {persona}
+Input: {user_input}
+Secondary Input (if merge): {user_input_2}
+"""
+
+# Legacy persona-specific prompts (kept for backward compatibility)
 STUDENT_PROMPT = """You are an EXPERT startup idea generator for COLLEGE STUDENTS with limited time, money, and experience.
 
 🎯 CRITICAL RULES:
@@ -203,46 +433,40 @@ Generate 3 COMPLETELY UNIQUE ideas that:
 BE BOLD. BE CREATIVE. BE SPECIFIC. AVOID THE OBVIOUS."""
 
 # This is the generic async generator function that yields the AI's response chunks
-async def stream_generator(prompt: str, model_identifier: str, system_prompt: str):
+async def stream_generator(prompt: str, model_identifier: str, system_prompt: str, mode: str = "keyword"):
     try:
-        # Add multiple sources of randomness to force unique generations
-        random_seed = int(time.time() * 1000000) % 1000000
-        random_variation = random.randint(1000, 9999)
-        
-        # Add variety triggers to force different thinking patterns
-        variety_triggers = [
-            "Think outside the box and avoid common startup ideas.",
-            "Be extremely creative and unique with these ideas.",
-            "Generate ideas from unusual angles and niches.",
-            "Focus on underserved markets and novel solutions.",
-            "Explore emerging trends and unconventional approaches.",
-            "Think of ideas that would surprise people.",
-            "Combine unexpected industries or technologies.",
-            "Avoid any ideas you've mentioned before - be completely fresh.",
-            "Challenge yourself to think of ideas nobody else would suggest.",
-            "Mix unusual combinations of industries and technologies.",
-        ]
-        
-        random_trigger = random.choice(variety_triggers)
-        
-        # Add explicit anti-repetition instruction
-        anti_repeat_note = "CRITICAL: Do NOT generate any of these ideas: AI Mental Health Chatbot, Blockchain Carbon Credit, GitHub Code Review Bot, Virtual Event Planning, Student Podcast, Campus Events, Resume Templates, Canva Templates."
-        
-        # Create highly varied prompt
-        varied_prompt = f"{prompt}\n\n{random_trigger}\n\n{anti_repeat_note}\n\n[Session: {random_seed}-{random_variation}]"
+        # Adjust parameters based on mode
+        if mode in ["analyze", "score", "refine"]:
+            # More structured outputs need higher max tokens and lower randomness
+            max_tokens = 800
+            temperature = 0.8
+            frequency_penalty = 1.5
+            presence_penalty = 1.5
+        elif mode in ["merge", "expand"]:
+            # Medium complexity
+            max_tokens = 500
+            temperature = 0.9
+            frequency_penalty = 1.8
+            presence_penalty = 1.8
+        else:  # keyword mode
+            # Original high creativity settings
+            max_tokens = 400
+            temperature = 1.0
+            frequency_penalty = 2.0
+            presence_penalty = 2.0
         
         stream = client.chat.completions.create(
             model=model_identifier,
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": varied_prompt},
+                {"role": "user", "content": prompt},
             ],
             stream=True,
-            temperature=1.0,  # Maximum creativity (2.0 causes instability)
-            max_tokens=200,
-            top_p=0.92,  # Slightly lower for more focused diversity
-            frequency_penalty=2.0,  # ABSOLUTE MAXIMUM - penalizes repeating tokens
-            presence_penalty=2.0,  # ABSOLUTE MAXIMUM - penalizes repeating topics
+            temperature=temperature,
+            max_tokens=max_tokens,
+            top_p=0.92,
+            frequency_penalty=frequency_penalty,
+            presence_penalty=presence_penalty,
         )
         for chunk in stream:
             content = chunk.choices[0].delta.content
@@ -255,26 +479,50 @@ async def stream_generator(prompt: str, model_identifier: str, system_prompt: st
 @app.post("/generate")
 @app.post("/brainstorm")
 async def generate_response(request: AgentRequest):
-    # Extract persona from prompt if present
-    persona = None
+    # Extract persona and mode from request or prompt
+    persona = request.persona or "hackathon"
+    mode = request.mode or "keyword"
     user_prompt = request.prompt
+    secondary_input = request.secondary_input or ""
     
+    # Legacy: Extract persona from prompt if present (backward compatibility)
     if request.prompt.startswith('[PERSONA:'):
-        # Extract persona tag
         persona_end = request.prompt.find(']')
         persona = request.prompt[9:persona_end].strip().lower()
         user_prompt = request.prompt[persona_end+1:].strip()
     
+    # Legacy: Extract mode from prompt if present
+    if user_prompt.startswith('[MODE:'):
+        mode_end = user_prompt.find(']')
+        mode = user_prompt[6:mode_end].strip().lower()
+        user_prompt = user_prompt[mode_end+1:].strip()
+    
     model = "meta-llama/llama-3.3-70b-instruct"
     
-    # Select system prompt based on persona
-    if persona == 'student':
-        system_prompt = STUDENT_PROMPT
-    elif persona == 'entrepreneur':
-        system_prompt = ENTREPRENEUR_PROMPT
-    elif persona == 'hackathon':
-        system_prompt = HACKATHON_PROMPT
-    else:
-        system_prompt = DEFAULT_PROMPT
+    # Use MASTER_IDEA_ENGINE_PROMPT for new API
+    # Format the prompt with user inputs
+    formatted_prompt = MASTER_IDEA_ENGINE_PROMPT.format(
+        mode=mode,
+        persona=persona,
+        user_input=user_prompt,
+        user_input_2=secondary_input
+    )
     
-    return StreamingResponse(stream_generator(user_prompt, model, system_prompt), media_type='text/plain')
+    # Check if using legacy mode (old persona-based prompts)
+    use_legacy = request.prompt.startswith('[PERSONA:') and not request.prompt.startswith('[MODE:')
+    
+    if use_legacy:
+        # Use legacy prompts for backward compatibility
+        if persona == 'student':
+            system_prompt = STUDENT_PROMPT
+        elif persona == 'entrepreneur':
+            system_prompt = ENTREPRENEUR_PROMPT
+        elif persona == 'hackathon':
+            system_prompt = HACKATHON_PROMPT
+        else:
+            system_prompt = DEFAULT_PROMPT
+        
+        return StreamingResponse(stream_generator(user_prompt, model, system_prompt, "keyword"), media_type='text/plain')
+    else:
+        # Use new MASTER_IDEA_ENGINE_PROMPT
+        return StreamingResponse(stream_generator("", model, formatted_prompt, mode), media_type='text/plain')
