@@ -48,7 +48,7 @@ async def stream_generator(prompt: str, model_identifier: str, system_prompt: st
 @app.post("/roadmap")
 async def generate_response(request: AgentRequest):
     # Set the specific model and prompt for THIS agent
-    model = "meta-llama/llama-3.3-70b-instruct"  # Using Meta Llama 3.3 70B for strategic planning
+    model = "openai/gpt-4-turbo"  # Using Meta Llama 3.3 70B for strategic planning
     system_prompt = """You are a strategic roadmap architect specializing in executable implementation plans.
 
 Given a project or idea, create a 3-4 phase roadmap where each phase:

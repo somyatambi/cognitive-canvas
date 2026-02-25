@@ -6,13 +6,26 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 import random
 import time
-from typing import Optional
+from typing import Optional, Union
 
 class AgentRequest(BaseModel):
-    prompt: str
-    mode: Optional[str] = "keyword"  # keyword, expand, merge, analyze, score, refine
-    persona: Optional[str] = "hackathon"  # student, entrepreneur, hackathon
-    secondary_input: Optional[str] = None  # Used for merge mode (second idea)
+    # New format fields
+    mode: Optional[str] = "keyword"  # "keyword" | "expand" | "merge" | "analyze" | "score" | "refine"
+    persona: Optional[str] = "hackathon"  # "student" | "entrepreneur" | "hackathon"
+    user_input: Optional[str] = None  # Main input (keyword, idea, rough description)
+    user_input_2: Optional[str] = None  # Second idea (only for "merge" mode)
+    
+    # Legacy format support (for existing frontend)
+    prompt: Optional[str] = None  # Old field name
+    secondary_input: Optional[str] = None  # Old field name for merge mode
+    
+    def get_user_input(self) -> str:
+        """Get user input from either new or old field"""
+        return self.user_input or self.prompt or ""
+    
+    def get_user_input_2(self) -> str:
+        """Get secondary input from either new or old field"""
+        return self.user_input_2 or self.secondary_input or "N/A"
 
 app = FastAPI()
 
@@ -28,7 +41,15 @@ app.add_middleware(
 def root():
     return {"status": "ok", "agent": "Brainstormer Agent", "message": "Agent is running"}
 
-client = OpenAI(base_url="https://openrouter.ai/api/v1", api_key=os.getenv("OPENROUTER_API_KEY"))
+# Initialize OpenAI client (with better error handling)
+api_key = os.getenv("OPENROUTER_API_KEY")
+if not api_key:
+    print("⚠️  WARNING: OPENROUTER_API_KEY not set. Please set it to use the agent.")
+    print("   Set it with: $env:OPENROUTER_API_KEY = 'your-key-here'")
+    print("   Or see QUICK_START.md for detailed instructions.")
+    client = None  # Will fail at runtime if API is called, but allows module import
+else:
+    client = OpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
 
 # MASTER IDEA ENGINE PROMPT
 MASTER_IDEA_ENGINE_PROMPT = """
@@ -65,7 +86,7 @@ RULES:
 - Ideas must be completely different from each other
 
 OUTPUT FORMAT:
-💡 KEYWORD IDEAS FOR: "{keyword}" [{persona} mode]
+💡 KEYWORD IDEAS FOR: "{{keyword}}" [{{persona}} mode]
 
 1. 🛠️ [Idea name in 6-8 words]
    → [Description in 15-20 words]
@@ -95,7 +116,7 @@ RULES:
 - Maintain the DNA of the original idea
 
 OUTPUT FORMAT:
-🌿 BRANCHING OUT FROM: "{original_idea}"
+🌿 BRANCHING OUT FROM: "{{original_idea}}"
 
 1. 👥 [Pivot to New Audience] [Idea in 6-8 words]
    → [How it relates to original in 15-20 words]
@@ -124,8 +145,8 @@ RULES:
 
 OUTPUT FORMAT:
 🔀 MERGING IDEAS:
-   Idea A: "{idea_1}"
-   Idea B: "{idea_2}"
+   Idea A: "{{idea_1}}"
+   Idea B: "{{idea_2}}"
 
 ✨ HYBRID IDEA: [Merged idea name in 6-8 words]
 
@@ -155,7 +176,7 @@ RULES:
 - Keep analysis grounded and practical
 
 OUTPUT FORMAT:
-📊 MARKET ANALYSIS: "{idea}"
+📊 MARKET ANALYSIS: "{{idea}}"
 
 🏢 COMPETITOR LANDSCAPE:
 1. [Competitor 1] — [What they do, 10 words] | ⚠️ Weakness: [10 words]
@@ -187,7 +208,7 @@ RULES:
 - The verdict must be actionable
 
 OUTPUT FORMAT (for each idea):
-📊 SCORECARD: "{idea}"
+📊 SCORECARD: "{{idea}}"
 
 | Criteria           | Score | Reason                        |
 |--------------------|-------|-------------------------------|
@@ -435,6 +456,21 @@ BE BOLD. BE CREATIVE. BE SPECIFIC. AVOID THE OBVIOUS."""
 # This is the generic async generator function that yields the AI's response chunks
 async def stream_generator(prompt: str, model_identifier: str, system_prompt: str, mode: str = "keyword"):
     try:
+        # Check if client is initialized
+        if client is None:
+            error_msg = (
+                "❌ ERROR: OPENROUTER_API_KEY not set!\n\n"
+                "To fix this:\n"
+                "1. Get your API key from: https://openrouter.ai/keys\n"
+                "2. Set it as an environment variable:\n"
+                "   PowerShell: $env:OPENROUTER_API_KEY = 'sk-or-v1-your-key'\n"
+                "   CMD: set OPENROUTER_API_KEY=sk-or-v1-your-key\n"
+                "   Linux/Mac: export OPENROUTER_API_KEY=sk-or-v1-your-key\n\n"
+                "See QUICK_START.md for detailed instructions.\n"
+            )
+            yield error_msg
+            return
+        
         # Adjust parameters based on mode
         if mode in ["analyze", "score", "refine"]:
             # More structured outputs need higher max tokens and lower randomness
@@ -478,51 +514,37 @@ async def stream_generator(prompt: str, model_identifier: str, system_prompt: st
 
 @app.post("/generate")
 @app.post("/brainstorm")
+@app.post("/idea-engine")
 async def generate_response(request: AgentRequest):
-    # Extract persona and mode from request or prompt
-    persona = request.persona or "hackathon"
+    # Support both new and legacy API formats
     mode = request.mode or "keyword"
-    user_prompt = request.prompt
-    secondary_input = request.secondary_input or ""
+    persona = request.persona or "hackathon"
+    user_input = request.get_user_input()
+    user_input_2 = request.get_user_input_2()
     
-    # Legacy: Extract persona from prompt if present (backward compatibility)
-    if request.prompt.startswith('[PERSONA:'):
-        persona_end = request.prompt.find(']')
-        persona = request.prompt[9:persona_end].strip().lower()
-        user_prompt = request.prompt[persona_end+1:].strip()
+    # Legacy: Extract persona from prompt if present (old frontend format)
+    if user_input.startswith('[PERSONA:'):
+        persona_end = user_input.find(']')
+        if persona_end != -1:
+            persona = user_input[9:persona_end].strip().lower()
+            user_input = user_input[persona_end+1:].strip()
     
     # Legacy: Extract mode from prompt if present
-    if user_prompt.startswith('[MODE:'):
-        mode_end = user_prompt.find(']')
-        mode = user_prompt[6:mode_end].strip().lower()
-        user_prompt = user_prompt[mode_end+1:].strip()
+    if user_input.startswith('[MODE:'):
+        mode_end = user_input.find(']')
+        if mode_end != -1:
+            mode = user_input[6:mode_end].strip().lower()
+            user_input = user_input[mode_end+1:].strip()
     
-    model = "meta-llama/llama-3.3-70b-instruct"
+    model = "openai/gpt-4-turbo"
     
-    # Use MASTER_IDEA_ENGINE_PROMPT for new API
-    # Format the prompt with user inputs
+    # Format the MASTER_IDEA_ENGINE_PROMPT with user inputs
     formatted_prompt = MASTER_IDEA_ENGINE_PROMPT.format(
         mode=mode,
         persona=persona,
-        user_input=user_prompt,
-        user_input_2=secondary_input
+        user_input=user_input,
+        user_input_2=user_input_2
     )
     
-    # Check if using legacy mode (old persona-based prompts)
-    use_legacy = request.prompt.startswith('[PERSONA:') and not request.prompt.startswith('[MODE:')
-    
-    if use_legacy:
-        # Use legacy prompts for backward compatibility
-        if persona == 'student':
-            system_prompt = STUDENT_PROMPT
-        elif persona == 'entrepreneur':
-            system_prompt = ENTREPRENEUR_PROMPT
-        elif persona == 'hackathon':
-            system_prompt = HACKATHON_PROMPT
-        else:
-            system_prompt = DEFAULT_PROMPT
-        
-        return StreamingResponse(stream_generator(user_prompt, model, system_prompt, "keyword"), media_type='text/plain')
-    else:
-        # Use new MASTER_IDEA_ENGINE_PROMPT
-        return StreamingResponse(stream_generator("", model, formatted_prompt, mode), media_type='text/plain')
+    # Stream the response using the formatted prompt
+    return StreamingResponse(stream_generator("", model, formatted_prompt, mode), media_type='text/plain')

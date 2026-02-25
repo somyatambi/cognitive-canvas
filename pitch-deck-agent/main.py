@@ -56,7 +56,7 @@ async def stream_generator(prompt: str, model: str, system_prompt: str):
 @app.post("/pitchdeck")
 async def generate_response(request: AgentRequest):
     # Using Llama 3.3 70B for persuasive investor storytelling
-    model = "meta-llama/llama-3.3-70b-instruct"
+    model = "openai/gpt-4-turbo"
     
     system_prompt = """You are an expert pitch deck creator with experience helping startups, students, and entrepreneurs raise funding.
 
