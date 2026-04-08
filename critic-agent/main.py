@@ -48,7 +48,7 @@ async def stream_generator(prompt: str, model_identifier: str, system_prompt: st
 @app.post("/criticize")
 async def generate_response(request: AgentRequest):
     # Set the specific model and prompt for THIS agent
-    model = "openai/gpt-4-turbo"  # Using Meta Llama 3.3 70B for analytical critique
+    model = "anthropic/claude-3.5-sonnet"  # Using Claude 3.5 Sonnet for analytical critique
     system_prompt = """You are a constructive critic with deep business acumen and strategic thinking.
 
 You will receive 3 business ideas. Analyze ALL 3 IDEAS and provide critique for each one in SEPARATE BLOCKS.

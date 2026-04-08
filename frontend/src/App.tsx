@@ -512,7 +512,7 @@ const App = () => {
                 🚀 Start Fresh (Generate New Ideas)
               </button>
             )}
-            {menu.data.agentName !== 'Starting Point' && (menu.data.icon === '🧠' || menu.data.icon === '💡' || menu.data.icon === '🌿' || menu.data.icon === '🔀' || menu.data.icon === '📊' || menu.data.icon === '⭐' || menu.data.icon === '✨') && (
+            {menu.data.agentName !== 'Starting Point' && (menu.data.icon === '🎯' || menu.data.icon === '🧠' || menu.data.icon === '🔀' || menu.data.icon === '📊' || menu.data.icon === '⭐' || menu.data.icon === '✨') && (
               <button onClick={() => {
                 setModeModal({ show: true, sourceNode: {id: menu.id, data: menu.data, position: menu.position} });
                 setMenu(null);
@@ -520,7 +520,7 @@ const App = () => {
                 🧠 Work with This Idea (5 Modes)
               </button>
             )}
-            {menu.data.agentName !== 'Starting Point' && (menu.data.icon === '🧠' || menu.data.icon === '💡' || menu.data.icon === '🌿' || menu.data.icon === '🔀' || menu.data.icon === '📊' || menu.data.icon === '⭐' || menu.data.icon === '✨') && (
+            {menu.data.agentName !== 'Starting Point' && (menu.data.icon === '🧠' || menu.data.icon === '💡' || menu.data.icon === '🌿' || menu.data.icon === '🔀' || menu.data.icon === '📊' || menu.data.icon === '⭐' || menu.data.icon === '✨' || menu.data.icon === '🎯') && (
               <button onClick={handleSelectIdea}>
                 ✨ Select & Expand Idea
               </button>
@@ -530,7 +530,7 @@ const App = () => {
                 🧐 Criticize
               </button>
             )}
-            {menu.data.agentName !== 'Starting Point' && (menu.data.icon === '🧠' || menu.data.icon === '💡' || menu.data.icon === '🌿' || menu.data.icon === '🔀' || menu.data.icon === '📊' || menu.data.icon === '⭐' || menu.data.icon === '✨') && (
+            {menu.data.agentName !== 'Starting Point' && (menu.data.icon === '🎯' || menu.data.icon === '🧠' || menu.data.icon === '🔀' || menu.data.icon === '📊' || menu.data.icon === '⭐' || menu.data.icon === '✨') && (
               <button onClick={() => handleAgentInvoke('roadmap', {id: menu.id, data: menu.data, position: menu.position})}>
                 🗺️ Generate Roadmap
               </button>
@@ -759,16 +759,6 @@ const App = () => {
             </div>
           </div>
         )}
-
-        {/* Sponsor Tech Badge Footer */}
-        <div className="sponsor-footer">
-          <span className="sponsor-label">Powered by</span>
-          <div className="sponsor-badges">
-            <span className="sponsor-badge meta">Meta Llama</span>
-            <span className="sponsor-badge cerebras">Cerebras AI</span>
-            <span className="sponsor-badge docker">Docker MCP</span>
-          </div>
-        </div>
 
       </ReactFlowProvider>
     </div>

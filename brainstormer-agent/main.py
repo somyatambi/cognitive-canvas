@@ -536,7 +536,8 @@ async def generate_response(request: AgentRequest):
             mode = user_input[6:mode_end].strip().lower()
             user_input = user_input[mode_end+1:].strip()
     
-    model = "openai/gpt-4-turbo"
+    # Changed to Claude 3.5 Sonnet ("cluade 4.6" typo assumed to be 3.5 or latest sonnet)
+    model = "anthropic/claude-3.5-sonnet"
     
     # Format the MASTER_IDEA_ENGINE_PROMPT with user inputs
     formatted_prompt = MASTER_IDEA_ENGINE_PROMPT.format(

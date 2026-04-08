@@ -1,12 +1,12 @@
 # 🎨 Cognitive Canvas
 
-> **AI-Powered Idea Studio** - Multi-agent visual workspace for entrepreneurs, students, and hackathon teams
+> **AI-Powered Idea Studio** - Multi-agent visual workspace for entrepreneurs, students, and developers
 
 ---
 
 ## 🚀 Live Demo
-- **Frontend**: https://cognitive-canvas-hackathon.vercel.app
-- **Backend**: https://cognitive-canvas-hackathon.onrender.com
+- **Frontend**: https://cognitive-canvas.vercel.app
+- **Backend**: https://cognitive-canvas.onrender.com
 
 ---
 
@@ -24,7 +24,7 @@ End-to-end workflow takes ~2 minutes.
 
 ## 🎯 Problem Statement
 
-**The Blank Canvas Syndrome**: Entrepreneurs, students, and hackathon teams struggle with the overwhelming challenge of starting from scratch. Traditional brainstorming tools are either:
+**The Blank Canvas Syndrome**: Entrepreneurs, students, and developers struggle with the overwhelming challenge of starting from scratch. Traditional brainstorming tools are either:
 - Too rigid (linear chat interfaces)
 - Too isolated (single AI responses without validation)
 - Too abstract (ideas without actionable steps)
@@ -37,7 +37,7 @@ End-to-end workflow takes ~2 minutes.
 1. **🧠 Brainstorm** - Generate 3 focused startup ideas tailored to your profile:
    - 🎓 **Student Mode**: Budget-friendly ideas ($0-200) buildable in 10-15hrs/week
    - 💼 **Entrepreneur Mode**: High-growth B2B/SaaS ideas with $100k+ potential
-   - ⚡ **Hackathon Mode**: 24-48hr buildable projects with impressive demos
+   - ⚡ **Quick Prototype Mode**: 24-48hr buildable projects with impressive demos
 2. **🔍 Critique** - Get constructive feedback on strengths and challenges
 3. **🗺️ Roadmap** - Create strategic development phases
 4. **✅ Task Breakdown** - Transform phases into actionable tasks with **time ranges** (2-4h) and **difficulty ratings** (Easy/Medium/Hard)
@@ -152,7 +152,7 @@ Watch AI agents generate content in real-time with immediate feedback.
 - **Why Llama?**: 
   - Superior instruction following for creative tasks
   - Excellent at nuanced critique and strategic planning
-  - Open-source aligns with hackathon values
+  - Open-source aligns with developer values
 
 **Technical Highlight**: We use few-shot learning prompts with Llama 3.3 70B to enforce strict output constraints (exactly 3 ideas, 4-6 words each), demonstrating advanced prompt engineering.
 
@@ -181,7 +181,7 @@ Watch AI agents generate content in real-time with immediate feedback.
 ## 🚀 Quick Start
 
 ### Live Demo
-**Try it now**: https://cognitive-canvas-hackathon.vercel.app
+**Try it now**: https://cognitive-canvas.vercel.app
 
 ### Deployment
 
@@ -203,8 +203,8 @@ Watch AI agents generate content in real-time with immediate feedback.
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/somyatambi/cognitive-canvas-hackathon.git
-cd cognitive-canvas-hackathon
+git clone https://github.com/somyatambi/cognitive-canvas.git
+cd cognitive-canvas
 ```
 
 2. **Set up environment variables**
@@ -239,7 +239,7 @@ npm run dev
 - **Somya Tambi** - [@somyatambi](https://github.com/somyatambi)
 - **Sojas Nayak** - [@sojasnayak](https://github.com/sojasnayak)
 
-**Hackathon**: WeMakeDevs Fullstack GenAI Hackathon 2025
+**Project Type**: College Major Project
 
 ---
 
@@ -254,8 +254,8 @@ npm run dev
 
 ## 🔗 Links
 
-- **Live App**: https://cognitive-canvas-hackathon.vercel.app
-- **GitHub**: https://github.com/somyatambi/cognitive-canvas-hackathon
+
+- **GitHub**: https://github.com/somyatambi/cognitive-canvas
 
 ---
 

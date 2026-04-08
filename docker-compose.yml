@@ -35,4 +35,10 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx-compose.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - brainstormer-agent
+      - critic-agent
+      - roadmap-agent
+      - task-agent
+      - pitch-deck-agent

@@ -89,7 +89,7 @@ async def stream_generator(prompt: str, model: str, system_prompt: str, use_cere
 async def generate_response(request: AgentRequest):
     # Using Cerebras for ultra-fast structured output generation
     # Cerebras inference is 20x faster than traditional GPU inference!
-    model = "llama3.1-8b"  # Cerebras-optimized Llama model
+    model = "anthropic/claude-3.5-sonnet"  # Using Claude 3.5 Sonnet
     system_prompt = """You are a strategic project architect with expertise in task breakdown and execution planning.
 
 Given a project phase or goal, create a comprehensive, professional task breakdown with:
