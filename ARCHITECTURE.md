@@ -1,7 +1,7 @@
 # 🏗️ Cognitive Canvas - Technical Architecture
 
 > Deep dive into the multi-agent system design, streaming architecture, and technical decisions.
-
+ 
 ## Table of Contents
 1. [System Overview](#system-overview)
 2. [Multi-Agent Architecture](#multi-agent-architecture)
