@@ -1,5 +1,5 @@
 # cognitive-canvas-hackathon/.gitignore
-
+ 
 # Python
 __pycache__/
 *.py[cod]
