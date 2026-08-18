@@ -4,10 +4,6 @@
 
 ---
 
-## 🚀 Live Demo - https://gen-ai-hackathon-wmd.vercel.app
-
----
-
 ## 📖 **Quick Start Guide**
 
 1. Click the Starting Point and choose "Brainstorm Ideas" → get 3 persona-aware variations.
