@@ -4,9 +4,7 @@
 
 ---
 
-## 🚀 Live Demo
-- **Frontend**: https://cognitive-canvas.vercel.app
-- **Backend**: https://cognitive-canvas.onrender.com
+## 🚀 Live Demo - https://gen-ai-hackathon-wmd.vercel.app
 
 ---
 
@@ -142,46 +140,10 @@ Choose your profile before brainstorming:
 ### 6. **Streaming Real-Time Responses**
 Watch AI agents generate content in real-time with immediate feedback.
 
----
-
-## 🏆 Sponsor Technology Integration
-
-### ✅ Meta Llama (Required for Meta Prize)
-- **Model**: Llama 3.3 70B Instruct
-- **Usage**: 4 out of 5 agents (brainstormer, critic, roadmap, pitch deck)
-- **Why Llama?**: 
-  - Superior instruction following for creative tasks
-  - Excellent at nuanced critique and strategic planning
-  - Open-source aligns with developer values
-
-**Technical Highlight**: We use few-shot learning prompts with Llama 3.3 70B to enforce strict output constraints (exactly 3 ideas, 4-6 words each), demonstrating advanced prompt engineering.
-
-### ✅ Cerebras AI (Required for Cerebras Prize)
-- **Model**: Llama 3.1 8B (Cerebras-optimized)
-- **Usage**: Task Agent for structured output generation
-- **Why Cerebras?**:
-  - 20x faster inference than GPU-based solutions
-  - Perfect for real-time task generation
-  - Demonstrates multi-provider orchestration
-
-**Technical Highlight**: By combining Llama 3.3 70B (creativity) with Cerebras (speed), we showcase intelligent model selection based on use case requirements.
-
-### ✅ Docker Containerized Microservices (Required for Docker Prize)
-- **Implementation**: Nginx-based API gateway with FastAPI microservices
-- **Usage**: Orchestrates 5 containerized AI agents with intelligent routing
-- **Why Docker?**:
-  - Clean agent isolation via containers
-  - Scalable microservices architecture
-  - Production-ready deployment pattern
-
-**Technical Highlight**: Our Nginx gateway routes requests to specialized containerized agents, implementing a microservices pattern that scales horizontally.
-
----
-
 ## 🚀 Quick Start
 
 ### Live Demo
-**Try it now**: https://cognitive-canvas.vercel.app
+**Try it now**: https://gen-ai-hackathon-wmd.vercel.app/
 
 ### Deployment
 
@@ -234,12 +196,6 @@ npm run dev
 ## 👥 Team
 
 **Team Name**: The Iterators
-
-**Members**:
-- **Somya Tambi** - [@somyatambi](https://github.com/somyatambi)
-- **Sojas Nayak** - [@sojasnayak](https://github.com/sojasnayak)
-
-**Project Type**: College Major Project
 
 ---
 
