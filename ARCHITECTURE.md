@@ -202,7 +202,3 @@ class AgentRequest(BaseModel):
 ✅ **Real-Time Streaming** (Sub-second first-byte response)  
 ✅ **Docker Microservices** (Nginx gateway + isolated containers)  
 ✅ **React Flow Canvas** (Visual spatial thinking interface)
-
-**Built with ❤️ for WeMakeDevs Fullstack GenAI Hackathon**
-
-[← Back to README](./README.md)
