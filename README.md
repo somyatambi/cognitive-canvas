@@ -155,12 +155,6 @@ Watch AI agents generate content in real-time with immediate feedback.
 
 ### Local Development
 
-**Prerequisites**
-- Docker
-- Node.js 18+
-- OpenRouter API key ([get here](https://openrouter.ai/keys))
-- Cerebras API key ([get here](https://cloud.cerebras.ai/))
-
 **Setup**
 
 1. **Clone the repository**
@@ -190,29 +184,3 @@ npm run dev
 ```
 
 5. **Open browser** → http://localhost:5173
-
----
-
-## 👥 Team
-
-**Team Name**: The Iterators
-
----
-
-## 📚 Documentation
-
-- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - Technical deep dive into multi-agent system
-- **[SPONSOR_TECH_USAGE.md](./SPONSOR_TECH_USAGE.md)** - Detailed sponsor technology integration
-- **[DEMO_SCRIPT.md](./DEMO_SCRIPT.md)** - 3-minute demo guide
-- **[DEPLOYMENT_URLS.md](./DEPLOYMENT_URLS.md)** - Live deployment links and verification
-
----
-
-## 🔗 Links
-
-
-- **GitHub**: https://github.com/somyatambi/cognitive-canvas
-
----
-
-**Built with ❤️ for WeMakeDevs GenAI Hackathon 2025**
